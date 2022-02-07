@@ -20,7 +20,7 @@ fn get_acceleration() -> Acceleration {
 fn main() {
 	loop {
 		let acceleration = get_acceleration();
-		println!("x:{} y:{}",acceleration.x, acceleration.y);
+		println!("x:{} y:{}", acceleration.x, acceleration.y);
 		if acceleration.x.abs() > acceleration.y.abs() {
 			if acceleration.x > 0 {
 			} else {
