@@ -1,4 +1,4 @@
-use std::{fs, process::Command, time::Duration};
+use std::{fs, process::Command, thread::sleep, time::Duration};
 
 const DEV: &str = "/sys/bus/iio/devices/iio:device0";
 
@@ -39,10 +39,10 @@ fn get_acceleration() -> Acceleration {
 fn main() {
 	let mut last_rotation: Option<Rotation> = None;
 	loop {
-		std::thread::sleep(Duration::from_secs(2));
 		let acceleration = get_acceleration();
 		println!("x:{} y:{}", acceleration.x, acceleration.y);
 		if acceleration.x.abs() < 400 && acceleration.y.abs() < 400 {
+			sleep(Duration::from_secs(2));
 			continue;
 		}
 		let rotation = if acceleration.x.abs() > acceleration.y.abs() {
@@ -59,6 +59,7 @@ fn main() {
 			}
 		};
 		if Some(rotation) == last_rotation {
+			sleep(Duration::from_secs(2));
 			continue;
 		}
 		println!("rotate display to {}", rotation);
@@ -67,5 +68,9 @@ fn main() {
 			.spawn()
 			.unwrap();
 		last_rotation = Some(rotation);
+		sleep(Duration::from_secs(2));
+		for input in vec!["Wacom HID 52B0 Pen Pen (0x8061bce5)", "Wacom HID 52B0 Finger"] {
+			Command::new("xinput").args(["map-to-output", input, "eDP"]).spawn().unwrap();
+		}
 	}
 }
