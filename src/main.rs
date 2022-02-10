@@ -1,4 +1,5 @@
 use std::{fs, process::Command, thread::sleep, time::Duration};
+use strum_macros::Display;
 
 const DEV: &str = "/sys/bus/iio/devices/iio:device0";
 
@@ -7,23 +8,13 @@ struct Acceleration {
 	y: i32,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, Display, PartialEq)]
+#[strum(serialize_all = "lowercase")]
 enum Rotation {
 	Left,
 	Right,
 	Inverted,
 	Normal,
-}
-
-impl std::fmt::Display for Rotation {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		match self {
-			Rotation::Left => write!(f, "left"),
-			Rotation::Right => write!(f, "right"),
-			Rotation::Inverted => write!(f, "inverted"),
-			Rotation::Normal => write!(f, "normal"),
-		}
-	}
 }
 
 fn get_acceleration() -> Acceleration {
