@@ -1,6 +1,6 @@
-use std::fs;
+use std::{fs, process::Command};
 
-const DEV: &str = "/sys/bus/iio/devices/iio:device1";
+const DEV: &str = "/sys/bus/iio/devices/iio:device0";
 
 struct Acceleration {
 	x: i32,
@@ -23,11 +23,27 @@ fn main() {
 		println!("x:{} y:{}", acceleration.x, acceleration.y);
 		if acceleration.x.abs() > acceleration.y.abs() {
 			if acceleration.x > 0 {
+				Command::new("xrandr")
+					.args(["--output", "eDP", "--rotate", "left"])
+					.spawn()
+					.unwrap();
 			} else {
+				Command::new("xrandr")
+					.args(["--output", "eDP", "--rotate", "right"])
+					.spawn()
+					.unwrap();
 			}
 		} else {
 			if acceleration.y > 0 {
+				Command::new("xrandr")
+					.args(["--output", "eDP", "--rotate", "inverted"])
+					.spawn()
+					.unwrap();
 			} else {
+				Command::new("xrandr")
+					.args(["--output", "eDP", "--rotate", "normal"])
+					.spawn()
+					.unwrap();
 			}
 		};
 		std::thread::sleep_ms(2000);
